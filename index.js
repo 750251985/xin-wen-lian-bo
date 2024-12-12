@@ -152,7 +152,7 @@ const updateCatalogue = async ({ catalogueJsonPath, readmeMdPath, date, abstract
 	await readFile(catalogueJsonPath).then(async data => {
 		data = data.toString();
 		let catalogueJson = JSON.parse(data || '[]');
-		const targetObject = catalogueJson.find(item => item.date === data);
+		const targetObject = catalogueJson.find(item => item.date === date);
 		if (targetObject !== undefined ){
 			targetObject.abstract = abstract;
 		}else{
@@ -168,9 +168,8 @@ const updateCatalogue = async ({ catalogueJsonPath, readmeMdPath, date, abstract
 	// 更新 README.md
 	await readFile(readmeMdPath).then(async data => {
 		data = data.toString();
-		console.log(data)
-		if (data.indexOf('<!-- INSERT -->\\n- [${date}](./news/${date}.md)') < 0) {
-			let text = data.replace('<!-- INSERT -->', '<!-- INSERT -->\n- [${date}](./news/${date}.md)')
+		if (data.indexOf(date) < 0) {
+			let text = data.replace('<!-- INSERT -->', `<!-- INSERT -->\n- [${date}](./news/${date}.md)`)
 			await writeFile(readmeMdPath, text);
 		}
 	});
